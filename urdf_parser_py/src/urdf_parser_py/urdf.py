@@ -134,15 +134,23 @@ class GeometricType(xmlr.ValueType):
 xmlr.add_type('geometric', GeometricType())
 
 class Collision(xmlr.Object):
-	def __init__(self, geometry = None, origin = None):
+	def __init__(self, geometry = None, origin = None, name = None):
+                self.name = name
 		self.geometry = geometry
 		self.origin = origin
 
 xmlr.reflect(Collision, params = [
 	origin_element,
+        xmlr.Attribute('name', str, False),
 	xmlr.Element('geometry', 'geometric')
 	])
 
+class CollisionChecking(xmlr.Object):
+	def __init__(self):
+		pass
+
+xmlr.reflect(CollisionChecking, params = [
+	])
 
 class Texture(xmlr.Object):
 	def __init__(self, filename = None):
@@ -171,13 +179,15 @@ xmlr.reflect(Material, params = [
 
 
 class Visual(xmlr.Object):
-	def __init__(self, geometry = None, material = None, origin = None):
+	def __init__(self, geometry = None, material = None, origin = None, name = None):
+                self.name = name
 		self.geometry = geometry
 		self.material = material
 		self.origin = origin
 
 xmlr.reflect(Visual, params = [
 	origin_element,
+	xmlr.Attribute('name', str, False),
 	xmlr.Element('geometry', 'geometric'),
 	xmlr.Element('material', Material, False)
 	])
@@ -313,19 +323,21 @@ xmlr.reflect(Joint, params = [
 
 
 class Link(xmlr.Object):
-	def __init__(self, name=None, visual=None, inertial=None, collision=None, origin = None):
+	def __init__(self, name=None, visual=None, inertial=None, collision=None, origin = None, collision_checking = None):
 		self.name = name
 		self.visual = visual
 		self.inertial = inertial
 		self.collision = collision
 		self.origin = origin
+                self.collision_checking = collision_checking
 
 xmlr.reflect(Link, params = [
 	name_attribute,
 	origin_element,
 	xmlr.Element('inertial', Inertial, False),
 	xmlr.Element('visual', Visual, False),
-	xmlr.Element('collision', Collision, False)
+	xmlr.Element('collision', Collision, False),
+	xmlr.Element('collision_checking', CollisionChecking, False)
 	])
 
 
